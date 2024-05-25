@@ -1,3 +1,9 @@
+const taskForm = $('#task-form'); // Variables for DOM traversal
+const taskTitleInput = $('#task-title');
+const taskDueDateInput = $('#task-due-date');
+const taskDescriptionInput = $('#task-description');
+let taskEntries = []; // Initializes the working array
+
 // Retrieve tasks and nextId from localStorage
 let taskList = JSON.parse(localStorage.getItem("tasks"));
 let nextId = JSON.parse(localStorage.getItem("nextId"));
@@ -9,7 +15,7 @@ function generateTaskId() {
 
 // Todo: create a function to create a task card
 function createTaskCard(task) {
-
+    
 }
 
 // Todo: create a function to render the task list and make cards draggable
@@ -19,8 +25,23 @@ function renderTaskList() {
 
 // Todo: create a function to handle adding a new task
 function handleAddTask(event){
-
-}
+    event.preventDefault(); // Stops the page from refreshing on submit
+    if (!taskTitleInput.val() || !taskDueDateInput.val() || !taskDescriptionInput.val()){ // Checks for empty fields on form submit
+        alert("Please fill in all fields before continuing.");
+      return;
+    } else {
+      const taskEntry = { // Creates the object from the form input
+        taskTitle: taskTitleInput.val(),
+        taskDueDate: taskDueDateInput.val(),
+        taskDescription: taskDescriptionInput.val(),
+      };
+      console.log(taskEntry);
+      console.log(taskEntries);
+  
+      taskEntries.push(taskEntry); // Pushes the blog entry to the task entries array
+      localStorage.setItem('tasks', JSON.stringify(taskEntries)); // Stringifies the array of objects to local storage
+    };
+};
 
 // Todo: create a function to handle deleting a task
 function handleDeleteTask(event){
@@ -34,5 +55,14 @@ function handleDrop(event, ui) {
 
 // Todo: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
 $(document).ready(function () {
+    
+    taskForm.on('submit', handleAddTask); // Listens for a submit even from the taskForm then calls handleAddTask to parse the input
+
+    $( function() { // Datepicker jQuery widget
+        $( "#task-due-date" ).datepicker({
+          changeMonth: true,
+          changeYear: true
+        });
+      } );
 
 });
