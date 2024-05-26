@@ -5,6 +5,15 @@ const taskDescriptionInput = $('#task-description');
 const taskTable = $('#task-display');
 let taskEntries = []; // Initializes the working array
 
+function getTasksFromStorage() { // Checks for a stored array of objects in local storage and if so retrieves it and sets it to the working array
+    const storedTaskEntries = JSON.parse(localStorage.getItem('tasks'));
+    if (storedTaskEntries !== null) {
+      taskEntries = storedTaskEntries;
+    }
+    return;
+};
+
+
 // Retrieve tasks and nextId from localStorage
 //let taskList = JSON.parse(localStorage.getItem("tasks"));
 let nextId = JSON.parse(localStorage.getItem("nextId"));
@@ -29,11 +38,9 @@ function createTaskCard(task) { // Creating the task card, the various elements,
         const checkDueDate = dayjs(task.dueDate, 'DD/MM/YYYY');
 
         if (today.isSame(checkDueDate, 'day')) {
-            console.log("Hey");
             taskCard.addClass('bg-warning text-white');
             taskCardBody.addClass('bg-warning text-white');
         } else if (today.isAfter(checkDueDate)) {
-            console.log("And here.");
             taskCard.addClass('bg-danger text-white');
             taskCardBody.addClass('bg-danger text-white');
             taskCardDeleteButton.addClass('border-white');
@@ -49,37 +56,24 @@ function createTaskCard(task) { // Creating the task card, the various elements,
 
 // Todo: create a function to render the task list and make cards draggable
 function renderTaskList() {
+    const todoCardList = $('#todo-cards'); // Finding the divs that contain the task cards and emptying them in preperation for displaying
+    todoCardList.empty();
+    const inProgressCardList = $('#in-progress-cards');
+    inProgressCardList.empty();
+    const doneCardList = $('#done-cards');
+    doneCardList.empty();
+    const taskList = JSON.parse(localStorage.getItem("tasks"));
 
-const todoCardList = $('#todo-cards'); // Finding the divs that contain the task cards and emptying them in preperation for displaying
-todoCardList.empty();
-const inProgressCardList = $('#in-progress-cards');
-inProgressCardList.empty();
-const doneCardList = $('#done-cards');
-doneCardList.empty();
-
-const taskList = JSON.parse(localStorage.getItem("tasks"));
-
-taskList.forEach((tasks) => {
-    if (tasks.status === 'to-do'){
-        todoCardList.append(createTaskCard(tasks));
-    } else if (tasks.status === 'in-progress'){
-        inProgressCardList.append(createTaskCard(tasks));
-    } else { 
-        doneCardList.append(createTaskCard(tasks));
-    }
-});
-
-/* for (let tasks of taskList) {
-    if (tasks.status === 'todo') {
-      console.log(tasks.status);
-        todoCardList.append(createTaskCard(tasks));
-    } else if (tasks.status === 'in-progress') {
-      inProgressCardList.append(createTaskCard(tasks));
-    } else if (tasks.status === 'done') {
-      doneCardList.append(createTaskCard(tasks));
-    }
-  }*/
-
+    taskList.forEach((tasks) => {
+        if (tasks.status === 'to-do'){
+            todoCardList.append(createTaskCard(tasks));
+        } else if (tasks.status === 'in-progress'){
+            inProgressCardList.append(createTaskCard(tasks));
+        } else { 
+            doneCardList.append(createTaskCard(tasks));
+        }
+    });
+    return;
 };
 
 // Todo: create a function to handle adding a new task
@@ -96,8 +90,6 @@ function handleAddTask(event){ // Adding a task from a form input, processing in
         status: 'to-do', // Default status on creation. States are to-do, in-progress, done
         id: generateTaskId(taskTitleInput.val()), // Calls generateTaskId to create a unique numeric id for each entry
       };
-      //console.log(taskEntry);
-      //console.log(taskEntries);
   
       taskEntries.push(taskEntry); // Pushes the task entry to the task list array
       localStorage.setItem('tasks', JSON.stringify(taskEntries)); // Stringifies the task list array of objects to local storage
@@ -123,13 +115,17 @@ $(document).ready(function () {
     
     taskForm.on('submit', handleAddTask); // Listens for a submit even from the taskForm then calls handleAddTask to parse the input
 
-    taskTable.on('click', '.btn-delete-project', handleDeleteTask);
+    taskTable.on('click', '.btn-delete-project', handleDeleteTask); // Listens for a click on the delete button
 
-    $( function() { // Datepicker jQuery widget
+    
+    $( function() { // Datepicker jQuery widget for date input on the form
         $( "#task-due-date" ).datepicker({
           changeMonth: true,
           changeYear: true
         });
-      } );
+      });
+
+      getTasksFromStorage(); // Checks localStorage for stored tasks and if it finds them loads them into the working array
+      renderTaskList(); // Renders the task list to the lanes
 
 });
