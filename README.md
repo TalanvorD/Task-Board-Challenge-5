@@ -3,10 +3,11 @@ Task Board using 3rd party APIs
 
 ## User Story
 
-``md
+```md
 AS A project team member with multiple tasks to organize
 I WANT a task board 
 SO THAT I can add individual project tasks, manage their state of progress and track overall project progress accordingly
+```
 
 ## Acceptance Criteria
 
@@ -26,6 +27,7 @@ WHEN I click the delete button for a task
 THEN the task is removed from the task board and will not be added back after refreshing
 WHEN I refresh the page
 THEN the saved tasks persist
+```
 
 ## First notes
 
@@ -37,7 +39,7 @@ That saved input will be used to create individual cards that will have a title,
 Those cards will be color coded to indicate if the task is nearing the due date (yellow) or past due (red).  
 Those cards will also need to be dragged between the columns and the status will be updated depending on the column lands in.  
 The Delete button will remove the cards from the screen and localStorage.  
-Days.js, Bootstrap, jQuery and jQuery UI all will be utilized.  
+Days.js, Bootstrap and jQuery all will be utilized.  
 
 ## Steps taken
 
@@ -56,3 +58,6 @@ Days.js, Bootstrap, jQuery and jQuery UI all will be utilized.
     - Function created to remove cards once the Delete button is clicked and then columns are redrawn.
     - Function created to sort the object array by date so the tasks will show in ascending order.
         - Not part of the acceptance criteria but thought it would be nice to add.
+     
+
+![Task-Board-Screenshot](https://github.com/TalanvorD/Task-Board-Challenge-5/assets/164896317/28f0afa8-a772-45ed-8151-b3249a4a1ff1)
