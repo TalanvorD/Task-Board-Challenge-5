@@ -1,0 +1,12 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": []
+} const sample = function(){
+    const a = b = 3;
+}
+sample();
+console.log("Is a defined?", typeof a !== "undefined");
+console.log("Is b defined?", typeof b !== "undefined");

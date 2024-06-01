@@ -5,10 +5,6 @@ const taskDescriptionInput = $('#task-description');
 const taskTable = $('#task-display');
 let taskEntries = []; // Initializes the working array
 
-// Retrieve tasks and nextId from localStorage
-//let taskList = JSON.parse(localStorage.getItem("tasks"));
-//let nextId = JSON.parse(localStorage.getItem("nextId")); WTF is this for?
-
 function getTasksFromStorage() { // Checks for a stored array of objects in local storage and if so retrieves it and sets it to the working array
     const storedTaskEntries = JSON.parse(localStorage.getItem('tasks'));
     if (storedTaskEntries !== null) {
@@ -17,7 +13,17 @@ function getTasksFromStorage() { // Checks for a stored array of objects in loca
     return taskEntries;
 };
 
+function sortTaskList(taskList){ // Sorts the object array by date
+    taskList.sort(function(a, b){
+        if (a.dueDate < b.dueDate) {return -1;} // Sorting in ascending order
+        if (a.dueDate > b.dueDate) {return 1;}
+        return 0;
+      });
+    return taskList;
+}
+
 function saveTasksToStorage(input) { // Stringifies the task list array of objects and saves to local storage
+    sortTaskList(input);
     localStorage.setItem('tasks', JSON.stringify(input));
 }
 
@@ -53,8 +59,6 @@ function createTaskCard(task) { // Creating the task card, the various elements,
     return taskCard; // Returns the completed task card
 }
 
-
-// Todo: create a function to render the task list and make cards draggable
 function renderTaskList() { // Renders the tasks list cards to the appropriate containers and adds the draggable jQueryUI widget
     const todoCardList = $('#todo-cards'); // Finding the divs that contain the task cards and emptying them in preperation for displaying
     todoCardList.empty();
@@ -62,7 +66,7 @@ function renderTaskList() { // Renders the tasks list cards to the appropriate c
     inProgressCardList.empty();
     const doneCardList = $('#done-cards');
     doneCardList.empty();
-    const storedTasks = getTasksFromStorage(); // 
+    const storedTasks = getTasksFromStorage();
 
     storedTasks.forEach((tasks) => { // Loops through the array and appends the task cards to the appropriate containers
         if (tasks.status === 'to-do') {
@@ -117,9 +121,8 @@ function handleAddTask(event) { // Adding a task from a form input, processing i
 function handleDeleteTask(event) { // Deletes an object from the task list array
     const storedTasks = getTasksFromStorage();
     const currentTaskId = $(this).attr('data-project-id');
-    console.log(currentTaskId);
 
-    storedTasks.forEach((tasks) => { // Finds the index of the current TRY AND REPLACE THIS WITH A filter()!!!
+    storedTasks.forEach((tasks) => { // Finds the index of the current task by the id key to remove the object and splice the array
         if (tasks.id === currentTaskId) {
             storedTasks.splice(storedTasks.indexOf(tasks), 1);
         }
@@ -148,7 +151,7 @@ $(document).ready(function () {
 
     taskForm.on('submit', handleAddTask); // Listens for a submit even from the taskForm then calls handleAddTask to parse the input
 
-    taskTable.on('click', '.btn-delete-project', handleDeleteTask); // Listens for a click on the delete button
+    taskTable.on('click', '.btn-delete-project', handleDeleteTask); // Listens for a click on the delete button of a task card
 
     $('#task-due-date').datepicker({ // Datepicker jQuery widget for date input on the form
         changeMonth: true, changeYear: true
