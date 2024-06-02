@@ -13,12 +13,13 @@ function getTasksFromStorage() { // Checks for a stored array of objects in loca
     return taskEntries;
 };
 
-function sortTaskList(taskList){ // Sorts the object array by date
-    taskList.sort(function(a, b){
-        if (a.dueDate < b.dueDate) {return -1;} // Sorting in ascending order
-        if (a.dueDate > b.dueDate) {return 1;}
-        return 0;
-      });
+function sortTaskList(taskList) { // Sorts the object array by date
+    taskList.sort(function (a, b) {
+        if (a.dueDate < b.dueDate) { return -1; } // Sorting in ascending order by dueDate
+        if (a.dueDate > b.dueDate) { return 1; }
+        if (a.dueDate === b.dueDate && a.title < b.title) { return -1; } // Check to see if the dueDates are equal, and if so sort by title
+        if (a.dueDate === b.dueDate && a.dueDate > b.dueDate) { return 1; }
+    });
     return taskList;
 }
 
@@ -40,7 +41,7 @@ function createTaskCard(task) { // Creating the task card, the various elements,
     const taskCardDescription = $('<p>').addClass('card-text').text(task.description);
     const taskCardDeleteButton = $('<button>').addClass('btn btn-danger btn-delete-project').text('Delete').attr('data-project-id', task.id);
 
-    if (task.dueDate && task.status !== 'done') { // Checking the due date, if due today or past due coloring the task cards appropriately
+    if (task.status !== 'done') { // Checking the due date, if due today or past due coloring the task cards appropriately
         const today = dayjs();
         const checkDueDate = dayjs(task.dueDate, 'DD/MM/YYYY');
 
